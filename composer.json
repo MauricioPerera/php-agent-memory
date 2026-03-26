@@ -1,0 +1,33 @@
+{
+    "name": "mauricioperera/php-agent-memory",
+    "description": "Agentic memory system for AI agents — built on php-vector-store",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["ai", "agent", "memory", "vector", "recall", "consolidation", "bm25", "hybrid-search"],
+    "require": {
+        "php": ">=8.1",
+        "mauricioperera/php-vector-store": "*"
+    },
+    "suggest": {
+        "neuron-core/neuron-ai": "For Neuron AI agent integration (VectorStore, Toolkit, Retrieval adapters)"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "neuron-core/neuron-ai": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPAgentMemory\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PHPAgentMemory\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
