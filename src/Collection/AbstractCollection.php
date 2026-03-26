@@ -14,6 +14,8 @@ use PHPVectorStore\StoreInterface;
 
 abstract class AbstractCollection implements CollectionInterface
 {
+    private bool $dirty = false;
+
     public function __construct(
         protected readonly StoreInterface $store,
         protected readonly BM25Index $bm25,
@@ -44,6 +46,7 @@ abstract class AbstractCollection implements CollectionInterface
 
         $this->store->set($col, $id, $vector, $meta);
         $this->bm25->addDocument($col, $id, $meta['content'] ?? '');
+        $this->dirty = true;
 
         return ['id' => $id, 'metadata' => $meta];
     }
@@ -54,7 +57,10 @@ abstract class AbstractCollection implements CollectionInterface
         $content = $input['content'] ?? '';
 
         // Flush to ensure existing data is searchable
-        $this->store->flush();
+        if ($this->dirty) {
+            $this->store->flush();
+            $this->dirty = false;
+        }
 
         // Search for similar existing entities
         $candidates = $this->hybrid->search($col, $vector, $content, 5);
@@ -167,7 +173,10 @@ abstract class AbstractCollection implements CollectionInterface
     {
         $col = $this->collectionName($agentId, $userId);
 
-        $this->store->flush();
+        if ($this->dirty) {
+            $this->store->flush();
+            $this->dirty = false;
+        }
         $results = $this->hybrid->search($col, $queryVector, $query, $limit * 2);
 
         $filtered = [];
